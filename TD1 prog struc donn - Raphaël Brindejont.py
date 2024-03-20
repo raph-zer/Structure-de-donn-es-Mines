@@ -65,7 +65,7 @@ def most_points_joker(letters, words):#similar to most_points, but we need to ch
     top = score(letters[0])
     best = letters[0]
     for word in words:
-        joker = 1
+        joker_count = 1
         for letter in list(word):
             if letter not in letters:
                 joker = letter
