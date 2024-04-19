@@ -20,11 +20,8 @@ class Target:
         self.__tries = 5
         self.__root.bind_all('f', self.__oneshot)
         self.__crosshairs = (200,200)
-        self.__recenter = 0
-        while self.__tries > 0 :
-            self.__movecross(self.__recenter)
-            self.__recenter += 0.1
-        
+        self.__recenter = 50
+        self.__movecross(self.__recenter)  # Start moving the crosshair initially
 
     def execute(self):
         self.__root.mainloop()
@@ -58,7 +55,7 @@ class Target:
         self.draw_circle(x, y, 5, 'black')
         self.__increment_score(x, y)
         self.__label_score['text'] = f"score : {self.__score}"
-
+        
     def __oneshot(self, event):
         if self.__tries > 0 :
             self.__shootonce()
@@ -71,35 +68,41 @@ class Target:
         self.__button_shoot['state'] = 'disabled'
 
     def draw_crosshairs(self, x, y):
-        self.__canvas.create_line(x, 0, x, 400, fill='black')
-        self.__canvas.create_line(0, y, 400, y, fill='black')
-        self.draw_circle(x, y, 5, 'black')
+        self.__canvas.delete("crosshairs")  # Clear previous crosshairs
+        self.__canvas.create_line(x, 0, x, 400, fill='black', tags="crosshairs")
+        self.__canvas.create_line(0, y, 400, y, fill='black', tags="crosshairs")
+        self.__canvas.create_oval(x - 5, y + 5, x + 5, y - 5, fill='black', tags="crosshairs")
 
     def __movecross(self,p):
-        (x,y) = self.__crosshairs
-        if x == 0 or x == 400 or y == 0 or y == 400 :
+        (x, y) = self.__crosshairs
+        def sign(k):
+            return ((k >= 200) - (k < 200)) 
+        proba = randrange(101)
+        x += -7*sign(x) * ((proba <= p) - (proba > p))  
+        proba = randrange(101)
+        y += -7*sign(y) * ((proba <= p) - (proba > p))
+        if x <= 0 or x >= 400 or y <= 0 or y >= 400:  
             self.__rebound()
-        xsign = x//abs(x)
-        ysign = y//abs(y)
-        proba = randrange(100)
-        x -= xsign*((proba <= p)-(proba > p))
-        proba = randrange(100)
-        y -= ysign*((proba <= p)-(proba > p))
-        self.__crosshairs = (x,y)
-        self.draw_crosshairs(x,y)
+        else:
+            self.__crosshairs = (x, y)
+            self.draw_crosshairs(x, y)
+        if self.__tries > 0 :
+            self.__recenter += 0.05
+            self.__root.after(100, lambda: self.__movecross(self.__recenter))  # Move the crosshair again after a delay
+            
 
-        
+
     def __rebound(self):
         """make the crosshairs rebound on the side"""
         (x,y) = self.__crosshairs
-        if x == 0 :
+        if x <= 0 :
             x = 1
-        if x == 400 :
-            x = 309
-        if y == 0 :
+        if x >= 400 :
+            x = 399
+        if y <= 0 :
             y = 1
-        if y == 400 :
-            y = 309
+        if y >= 400 :
+            y = 399
         self.__crosshairs = (x,y)
         self.draw_crosshairs(x,y)
 
