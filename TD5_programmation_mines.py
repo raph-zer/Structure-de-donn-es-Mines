@@ -19,9 +19,10 @@ class Target:
         self.__label_score.pack(side=BOTTOM, padx=5, pady=5)
         self.__tries = 5
         self.__root.bind_all('f', self.__oneshot)
-        self.__crosshairs = (200,200)
+        self.__crosshairs = (randrange(400),randrange(400))
         self.__recenter = 50
-        self.__movecross(self.__recenter)  # Start moving the crosshair initially
+        self.__time = 1 #number of aims
+        self.__movecross()  # Start moving the crosshair initially
 
     def execute(self):
         self.__root.mainloop()
@@ -73,22 +74,27 @@ class Target:
         self.__canvas.create_line(0, y, 400, y, fill='black', tags="crosshairs")
         self.__canvas.create_oval(x - 5, y + 5, x + 5, y - 5, fill='black', tags="crosshairs")
 
-    def __movecross(self,p):
+    def __movecross(self):
         (x, y) = self.__crosshairs
+        p = self.__recenter
         def sign(k):
             return ((k >= 200) - (k < 200)) 
         proba = randrange(101)
-        x += -7*sign(x) * ((proba <= p) - (proba > p))  
+        x += -4*sign(x) * ((proba <= p) - (proba > p))
         proba = randrange(101)
-        y += -7*sign(y) * ((proba <= p) - (proba > p))
+        y += -4*sign(y) * ((proba <= p) - (proba > p))
         if x <= 0 or x >= 400 or y <= 0 or y >= 400:  
             self.__rebound()
         else:
             self.__crosshairs = (x, y)
             self.draw_crosshairs(x, y)
         if self.__tries > 0 :
-            self.__recenter += 0.05
-            self.__root.after(100, lambda: self.__movecross(self.__recenter))  # Move the crosshair again after a delay
+            if (self.__time//(3000//100))%2 == 0 : #tranches de 4ffffff secondes
+                self.__recenter = 30 - self.__time//39
+            else :
+                self.__recenter = 65 + self.__time//20
+            self.__root.after(50, lambda: self.__movecross())  # Move the crosshair again after a delay
+            self.__time += 1
             
 
 
@@ -105,6 +111,7 @@ class Target:
             y = 399
         self.__crosshairs = (x,y)
         self.draw_crosshairs(x,y)
+        self.__time += 1
 
 
 if __name__ == '__main__':
