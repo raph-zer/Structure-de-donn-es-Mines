@@ -53,7 +53,7 @@ class Target:
         self.__score += (6 - distance // 30) * (distance < 6 * 30)
 
     def __shootonce(self):
-        x, y = randrange(400), randrange(400)
+        (x,y) = self.__crosshairs
         self.draw_circle(x, y, 5, 'black')
         self.__increment_score(x, y)
         self.__label_score['text'] = f"score : {self.__score}"
@@ -81,7 +81,9 @@ class Target:
         xsign = x//abs(x)
         ysign = y//abs(y)
         proba = randrange(100)
-        x -= xsign((proba <= p)-(proba > p))
+        x -= xsign*((proba <= p)-(proba > p))
+        proba = randrange(100)
+        y -= ysign*((proba <= p)-(proba > p))
         self.__crosshairs = (x,y)
         self.draw_crosshairs(x,y)
 
@@ -98,6 +100,7 @@ class Target:
         if y == 400 :
             y = 309
         self.__crosshairs = (x,y)
+        self.draw_crosshairs(x,y)
 
 
 if __name__ == '__main__':
