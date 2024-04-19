@@ -80,9 +80,9 @@ class Target:
         def sign(k):
             return ((k >= 200) - (k < 200)) 
         proba = randrange(101)
-        x += -4*sign(x) * ((proba <= p) - (proba > p))
+        x += -7*sign(x) * ((proba <= p) - (proba > p))
         proba = randrange(101)
-        y += -4*sign(y) * ((proba <= p) - (proba > p))
+        y += -7*sign(y) * ((proba <= p) - (proba > p))
         if x <= 0 or x >= 400 or y <= 0 or y >= 400:  
             self.__rebound()
         else:
