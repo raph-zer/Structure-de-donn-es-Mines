@@ -1,6 +1,6 @@
 from tkinter import Tk, Canvas, Label, Button, TOP, LEFT, RIGHT, BOTTOM
 from random import randrange
-from math import sqrt
+from math import sqrt, abs
 
 class Target:
 
@@ -78,8 +78,10 @@ class Target:
         (x,y) = self.__crosshairs
         if x == 0 or x == 400 or y == 0 or y == 400 :
             self.__rebound()
+        xsign = x//abs(x)
+        ysign = y//abs(y)
         proba = randrange(100)
-        if proba < p :
+        x -= xsign((proba <= p)-(proba > p))
         self.__crosshairs = (x,y)
         self.draw_crosshairs(x,y)
 
