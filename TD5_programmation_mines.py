@@ -1,6 +1,6 @@
 from tkinter import Tk, Canvas, Label, Button, TOP, LEFT, RIGHT, BOTTOM
 from random import randrange
-from math import sqrt, abs
+from math import sqrt
 
 class Target:
 
