@@ -23,6 +23,7 @@ class Target:
         self.__recenter = 0
         while self.__tries > 0 :
             self.__movecross(self.__recenter)
+            self.__recenter += 0.1
         
 
     def execute(self):
